@@ -17,7 +17,7 @@
         }
 
         public override bool CanHaveCard(CardData otherCard) {
-            return otherCard.Id == targetCardId;
+            return otherCard.Id == targetCardId && otherCard.CanHaveCard(otherCard);
         }
     }
 }
