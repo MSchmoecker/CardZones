@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using UnityEngine;
 using TMPro;
+using Object = UnityEngine.Object;
 
 namespace CardZones {
     [HarmonyPatch]
@@ -89,6 +92,33 @@ namespace CardZones {
             cardData.UniqueId = uniqueId;
 
             return cardData;
+        }
+
+        /// <summary>
+        ///     WorldManager.GetCardCount() has a generic method as an overload, so we have to get a bit creative to only patch the no-generic one
+        /// </summary>
+        [HarmonyPatch]
+        public class ZoneCardNotInCardCount {
+            public static IEnumerable<MethodBase> TargetMethods() {
+                Type[] types = Assembly.GetAssembly(typeof(WorldManager)).GetTypes();
+                List<MethodInfo> patches = types
+                                           .SelectMany(type => type.GetMethods())
+                                           .Where(method => method.ReturnType == typeof(int) &&
+                                                            method.Name == "GetCardCount" &&
+                                                            !method.IsGenericMethod &&
+                                                            method.GetParameters().Length == 0)
+                                           .ToList();
+
+                if (patches.Count > 1) {
+                    Log.LogWarning("More than one WorldManager.GetCardCount() method found, this can cause unexpected behavior");
+                }
+
+                return patches;
+            }
+
+            public static void Postfix(WorldManager __instance, ref int __result) {
+                __result -= WorldManager.instance.GetCardCount("zoneCard");
+            }
         }
 
         /// <summary>
