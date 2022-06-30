@@ -14,5 +14,9 @@ namespace CardZones {
             zoneCard.NameTerm = card.CardData.NameTerm;
             zoneCard.MyGameCard.Velocity = new Vector3(0f, 8f, -4.5f);
         }
+
+        public override string GetTooltipText() {
+            return "Drop a card to create a zone card of this type";
+        }
     }
 }
