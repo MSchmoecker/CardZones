@@ -25,6 +25,7 @@ namespace CardZones {
         public static void StopOutlineMoving(GameCard __instance) {
             if (__instance.CardData.Id == "zoneCard") {
                 __instance.HighlightRectangle.DashOffset = 0;
+                __instance.HighlightRectangle.enabled = true;
             }
         }
 
@@ -51,36 +52,28 @@ namespace CardZones {
             cardContainer.gameObject.SetActive(false);
 
             ZoneCard zoneCard = CreateNewCardPrefab<ZoneCard>("zoneCard");
-            __instance.idToCard.Add(zoneCard.Id, zoneCard);
+            __instance.GameDataLoader.idToCard.Add(zoneCard.Id, zoneCard);
         }
 
-        [HarmonyPatch(typeof(CardTarget), nameof(CardTarget.Start)), HarmonyPostfix]
-        public static void AddMakeZoneBox(CardTarget __instance) {
-            if (!(__instance is SellBox)) {
-                return;
-            }
-
-            Transform parent = __instance.transform.parent;
-            Transform zoneMaker = parent.Find("Zone Maker");
-
-            if (zoneMaker) {
-                return;
-            }
-
-            zoneMaker = Object.Instantiate(__instance.transform.parent.Find("Basic Pack"), parent).transform;
+        [HarmonyPatch(typeof(CreatePackLine), nameof(CreatePackLine.Create)), HarmonyPostfix]
+        public static void AddMakeZoneBox(CreatePackLine __instance) {
+            Transform zoneMaker = Object.Instantiate(PrefabManager.instance.BoosterBoxPrefab, __instance.transform).transform;
             zoneMaker.name = "Zone Maker";
             zoneMaker.SetSiblingIndex(1);
 
-            TextMeshPro buyText = zoneMaker.GetComponent<BuyBoosterBox>().BuyText;
-            TextMeshPro nameText = zoneMaker.GetComponent<BuyBoosterBox>().NameText;
+            BuyBoosterBox buyBoosterBox = zoneMaker.GetComponent<BuyBoosterBox>();
+
+            TextMeshPro buyText = buyBoosterBox.BuyText;
+            TextMeshPro nameText = buyBoosterBox.NameText;
 
             buyText.text = "";
             nameText.text = "Make Zone";
 
-            Object.Destroy(zoneMaker.GetComponent<BuyBoosterBox>());
-            zoneMaker.gameObject.AddComponent<ZoneMaker>();
+            ZoneMaker maker = zoneMaker.gameObject.AddComponent<ZoneMaker>();
+            maker.HighlightRectangle = buyBoosterBox.HighlightRectangle;
+            Object.Destroy(buyBoosterBox);
 
-            __instance.GetComponentInParent<SetPositions>().SetPosition();
+            __instance.SetPositions();
         }
 
         public static T CreateNewCardPrefab<T>(string uniqueId) where T : CardData {

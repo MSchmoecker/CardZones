@@ -7,13 +7,8 @@
         public string targetCardId;
 
         public void Start() {
-            NameTerm = WorldManager.instance.GetCardFromId(targetCardId).NameTerm;
-            DescriptionTerm = WorldManager.instance.GetCardFromId(targetCardId).DescriptionTerm;
-        }
-
-        public override void Update() {
-            base.Update();
-            MyGameCard.HighlightActive = true;
+            NameTerm = WorldManager.instance.GameDataLoader.GetCardFromId(targetCardId).NameTerm;
+            DescriptionTerm = WorldManager.instance.GameDataLoader.GetCardFromId(targetCardId).DescriptionTerm;
         }
 
         public override bool CanHaveCard(CardData otherCard) {
