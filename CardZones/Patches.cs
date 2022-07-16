@@ -21,11 +21,19 @@ namespace CardZones {
             }
         }
 
+        [HarmonyPatch(typeof(GameCard), nameof(GameCard.SetColors)), HarmonyPostfix]
+        public static void SetColor(GameCard __instance) {
+            if (__instance.CardData.Id == "zoneCard") {
+                __instance.CardNameText.color = __instance.HighlightRectangle.Color;
+            }
+        }
+
         [HarmonyPatch(typeof(GameCard), nameof(GameCard.Update)), HarmonyPostfix]
         public static void StopOutlineMoving(GameCard __instance) {
             if (__instance.CardData.Id == "zoneCard") {
                 __instance.HighlightRectangle.DashOffset = 0;
                 __instance.HighlightRectangle.enabled = true;
+                __instance.CoinIcon.gameObject.SetActive(false);
             }
         }
 
