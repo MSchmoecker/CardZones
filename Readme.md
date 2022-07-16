@@ -27,5 +27,10 @@ Furthermore, this mod uses Harmony to patch into the game, which means no game c
 - Nexus: [https://www.nexusmods.com/stacklands/mods/5](https://www.nexusmods.com/stacklands/mods/5)
 
 ## Changelog
+0.1.1
+- Updated mod for game version 1.1.4 (islands update)
+- Show highlight on zone maker only for possible cards
+- Hide coin icon on zones
+
 0.1.0
 - Initial release
