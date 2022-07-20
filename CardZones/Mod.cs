@@ -7,7 +7,7 @@ namespace CardZones {
     public class Mod : BaseUnityPlugin {
         public const string Name = "Card Zones";
         public const string GUID = "com.maxsch.stacklands.cardzones";
-        public const string Version = "0.1.1";
+        public const string Version = "0.1.2";
 
         private static Harmony harmony;
 
