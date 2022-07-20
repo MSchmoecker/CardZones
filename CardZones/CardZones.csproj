@@ -89,8 +89,18 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <GAME_PATH>E:\Programme\Steam\steamapps\common\Stacklands</GAME_PATH>
+    <OUTPUT_PATH>$(GAME_PATH)/BepInEx/plugins/CardZones</OUTPUT_PATH>
+    <TMP_OUTPUT_PATH>$(TargetDir)/tmp</TMP_OUTPUT_PATH>
   </PropertyGroup>
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(GAME_PATH)\BepInEx\plugins" />
+    <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
+    <MakeDir Directories="$(OUTPUT_PATH)" />
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(TMP_OUTPUT_PATH)" />
+    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/CardZones-Nexus.zip" />
+    <Copy SourceFiles="../manifest.json" DestinationFolder="$(TMP_OUTPUT_PATH)" />
+    <Copy SourceFiles="../README.md" DestinationFolder="$(TMP_OUTPUT_PATH)" />
+    <Copy SourceFiles="../icon.png" DestinationFolder="$(TMP_OUTPUT_PATH)" />
+    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/CardZones-Thunderstore.zip" />
+    <Unzip SourceFiles="$(OUTPUT_PATH)/CardZones-Thunderstore.zip" DestinationFolder="$(OUTPUT_PATH)"/>
   </Target>
 </Project>
