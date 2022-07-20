@@ -2,7 +2,7 @@
 ## About
 Adds the ability to create card zones to help organizing your board without increasing the size of the deck.
 
-![Showcase](Docs/Showcase.png)
+![Showcase](https://raw.githubusercontent.com/MSchmoecker/CardZones/master/Docs/Showcase.png)
 
 Drag and drop any card onto the "Make Zone" box at the top to create a new zone for this type.
 
@@ -27,6 +27,9 @@ Furthermore, this mod uses Harmony to patch into the game, which means no game c
 - [Offical Stacklands Discord](https://discord.gg/sokpop), my Discord tag: Margmas#9562
 
 ## Changelog
+0.1.3
+- Updated Thunderstore Readme again
+
 0.1.2
 - Updated Thunderstore Readme
 
