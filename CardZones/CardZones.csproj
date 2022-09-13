@@ -38,14 +38,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="netstandard" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BepInEx">
-      <HintPath>$(GAME_PATH)\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath Condition="Exists('$(GAME_PATH)')">$(GAME_PATH)\BepInEx\core\BepInEx.dll</HintPath>
+      <HintPath Condition="Exists('$(R2MM_PATH)')">$(R2MM_PATH)\BepInEx\core\BepInEx.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="0Harmony">
-      <HintPath>$(GAME_PATH)\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath Condition="Exists('$(GAME_PATH)')">$(GAME_PATH)\BepInEx\core\0Harmony.dll</HintPath>
+      <HintPath Condition="Exists('$(R2MM_PATH)')">$(R2MM_PATH)\BepInEx\core\0Harmony.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="GameScripts">
@@ -88,19 +91,50 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <GAME_PATH>E:\Programme\Steam\steamapps\common\Stacklands</GAME_PATH>
-    <OUTPUT_PATH>$(GAME_PATH)/BepInEx/plugins/CardZones</OUTPUT_PATH>
+    <OUTPUT_NAME>CardZones</OUTPUT_NAME>
+    <R2MM_PROFILE>Default</R2MM_PROFILE>
+  </PropertyGroup>
+  <PropertyGroup>
+    <R2MM_PATH Condition="!Exists('$(R2MM_PATH)')">$(AppData)\r2modmanPlus-local\Stacklands\profiles\$(R2MM_PROFILE)</R2MM_PATH>
+    <R2MM_PATH Condition="!Exists('$(R2MM_PATH)')">$(AppData)\Thunderstore Mod Manager\DataFolder\Stacklands\profiles\$(R2MM_PROFILE)</R2MM_PATH>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="($(OS) == 'Unix' OR $(OS) == 'OSX') AND $(GAME_PATH) == ''">
+      <PropertyGroup>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$(HOME)/.steam/steam/steamapps/common/Stacklands</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$(HOME)/Library/Application Support/Steam/steamapps/common/Stacklands/Contents/MacOS</GAME_PATH>
+      </PropertyGroup>
+    </When>
+    <When Condition="($(OS) == 'Windows_NT') AND $(GAME_PATH) == ''">
+      <PropertyGroup>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 1948280', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GAME_PATH>
+        <_SteamLibraryPath>$([MSBuild]::GetRegistryValueFromView('HKEY_CURRENT_USER\SOFTWARE\Valve\Steam', 'SteamPath', null, RegistryView.Registry32))</_SteamLibraryPath>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)') AND '$(_SteamLibraryPath)' != ''">$(_SteamLibraryPath)\steamapps\common\Stacklands</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">C:\Program Files\Steam\steamapps\common\Stacklands</GAME_PATH>
+        <GAME_PATH Condition="!Exists('$(GAME_PATH)')">C:\Program Files (x86)\Steam\steamapps\common\Stacklands</GAME_PATH>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  <PropertyGroup>
+    <OUTPUT_PATH Condition="!Exists('$(OUTPUT_PATH)')">$(R2MM_PATH)/BepInEx/plugins</OUTPUT_PATH>
+    <OUTPUT_PATH Condition="!Exists('$(OUTPUT_PATH)')">$(GAME_PATH)/BepInEx/plugins</OUTPUT_PATH>
+    <FULL_OUTPUT_PATH>$(OUTPUT_PATH)/$(OUTPUT_NAME)</FULL_OUTPUT_PATH>
     <TMP_OUTPUT_PATH>$(TargetDir)/tmp</TMP_OUTPUT_PATH>
   </PropertyGroup>
+  <Target Name="BeforeBuild">
+    <Message Text="Game Path: $(GAME_PATH)" Importance="high" />
+    <Message Text="R2MM Path: $(R2MM_PATH)" Importance="high" />
+    <Message Text="Output Path: $(OUTPUT_PATH)" Importance="high" />
+  </Target>
   <Target Name="AfterBuild">
     <RemoveDir Directories="$(TMP_OUTPUT_PATH)" />
-    <MakeDir Directories="$(OUTPUT_PATH)" />
+    <MakeDir Directories="$(FULL_OUTPUT_PATH)" />
     <Copy SourceFiles="$(TargetDir)$(TargetFileName)" DestinationFolder="$(TMP_OUTPUT_PATH)" />
-    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/CardZones-Nexus.zip" />
+    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(FULL_OUTPUT_PATH)/$(OUTPUT_NAME)-Nexus.zip" />
     <Copy SourceFiles="../manifest.json" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <Copy SourceFiles="../README.md" DestinationFolder="$(TMP_OUTPUT_PATH)" />
     <Copy SourceFiles="../icon.png" DestinationFolder="$(TMP_OUTPUT_PATH)" />
-    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(OUTPUT_PATH)/CardZones-Thunderstore.zip" />
-    <Unzip SourceFiles="$(OUTPUT_PATH)/CardZones-Thunderstore.zip" DestinationFolder="$(OUTPUT_PATH)"/>
+    <ZipDirectory Overwrite="true" SourceDirectory="$(TMP_OUTPUT_PATH)" DestinationFile="$(FULL_OUTPUT_PATH)/$(OUTPUT_NAME)-Thunderstore.zip" />
+    <Unzip SourceFiles="$(FULL_OUTPUT_PATH)/$(OUTPUT_NAME)-Thunderstore.zip" DestinationFolder="$(FULL_OUTPUT_PATH)"/>
   </Target>
 </Project>
