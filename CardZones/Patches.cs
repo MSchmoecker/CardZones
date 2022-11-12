@@ -34,6 +34,7 @@ namespace CardZones {
                 __instance.HighlightRectangle.DashOffset = 0;
                 __instance.HighlightRectangle.enabled = true;
                 __instance.CoinIcon.gameObject.SetActive(false);
+                __instance.CoinText.transform.gameObject.SetActive(false);
             }
         }
 
@@ -70,6 +71,7 @@ namespace CardZones {
             zoneMaker.SetSiblingIndex(1);
 
             BuyBoosterBox buyBoosterBox = zoneMaker.GetComponent<BuyBoosterBox>();
+            buyBoosterBox.NewLabel.SetActive(false);
 
             TextMeshPro buyText = buyBoosterBox.BuyText;
             TextMeshPro nameText = buyBoosterBox.NameText;
