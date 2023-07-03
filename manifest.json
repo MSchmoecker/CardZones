@@ -2,5 +2,5 @@
 	"id": "com.maxsch.stacklands.cardzones",
 	"name": "CardZones",
 	"description": "Adds the ability to create card zones to help organizing your board without increasing the size of the deck",
-	"version": "0.1.4"
+	"version": "0.2.0"
 }

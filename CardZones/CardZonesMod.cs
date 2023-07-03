@@ -5,7 +5,7 @@ namespace CardZones {
     public class CardZonesMod : Mod {
         public const string Name = "Card Zones";
         public const string GUID = "com.maxsch.stacklands.cardzones";
-        public const string Version = "0.1.4";
+        public const string Version = "0.2.0";
 
         private static Harmony harmony;
 
