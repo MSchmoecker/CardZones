@@ -1,9 +1,6 @@
 {
+	"id": "com.maxsch.stacklands.cardzones",
 	"name": "CardZones",
 	"description": "Adds the ability to create card zones to help organizing your board without increasing the size of the deck",
-	"version_number": "0.1.4",
-	"website_url": "https://github.com/MSchmoecker/CardZones",
-	"dependencies": [
-		"BepInEx-BepInExPack_Stacklands-5.4.2100"
-	]
+	"version": "0.1.4"
 }

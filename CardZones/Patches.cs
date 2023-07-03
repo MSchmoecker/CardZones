@@ -64,7 +64,7 @@ namespace CardZones {
             __instance.GameDataLoader.idToCard.Add(zoneCard.Id, zoneCard);
         }
 
-        [HarmonyPatch(typeof(CreatePackLine), nameof(CreatePackLine.Create)), HarmonyPostfix]
+        [HarmonyPatch(typeof(CreatePackLine), nameof(CreatePackLine.CreateBoosterBoxes)), HarmonyPostfix]
         public static void AddMakeZoneBox(CreatePackLine __instance) {
             Transform zoneMaker = Object.Instantiate(PrefabManager.instance.BoosterBoxPrefab, __instance.transform).transform;
             zoneMaker.name = "Zone Maker";
