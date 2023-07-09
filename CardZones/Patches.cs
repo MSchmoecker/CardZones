@@ -11,8 +11,6 @@ using Object = UnityEngine.Object;
 namespace CardZones {
     [HarmonyPatch]
     public static class Patches {
-        private static GameObject cardContainer;
-
         [HarmonyPatch(typeof(GameCard), nameof(GameCard.Start)), HarmonyPostfix]
         public static void DisplayOutline(GameCard __instance) {
             if (__instance.CardData.Id == "zoneCard") {
@@ -55,15 +53,6 @@ namespace CardZones {
             return false;
         }
 
-        [HarmonyPatch(typeof(WorldManager), nameof(WorldManager.Awake)), HarmonyPostfix]
-        public static void AddCards(WorldManager __instance) {
-            cardContainer = new GameObject("CardContainer");
-            cardContainer.gameObject.SetActive(false);
-
-            ZoneCard zoneCard = CreateNewCardPrefab<ZoneCard>("zoneCard");
-            __instance.GameDataLoader.idToCard.Add(zoneCard.Id, zoneCard);
-        }
-
         [HarmonyPatch(typeof(CreatePackLine), nameof(CreatePackLine.CreateBoosterBoxes)), HarmonyPostfix]
         public static void AddMakeZoneBox(CreatePackLine __instance) {
             Transform zoneMaker = Object.Instantiate(PrefabManager.instance.BoosterBoxPrefab, __instance.transform).transform;
@@ -84,17 +73,6 @@ namespace CardZones {
             Object.Destroy(buyBoosterBox);
 
             __instance.SetPositions();
-        }
-
-        public static T CreateNewCardPrefab<T>(string uniqueId) where T : CardData {
-            GameObject card = new GameObject(uniqueId);
-            card.transform.SetParent(cardContainer.transform);
-            T cardData = card.AddComponent<T>();
-
-            cardData.Id = uniqueId;
-            cardData.UniqueId = uniqueId;
-
-            return cardData;
         }
 
         /// <summary>
