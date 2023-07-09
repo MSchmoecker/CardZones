@@ -1,0 +1,7 @@
+{
+  "$schema": "../../Docs/card.schema.json",
+  "script": "CardZones.ZoneCard",
+  "id": "zoneCard",
+  "nameTerm": "",
+  "descriptionTerm": ""
+}

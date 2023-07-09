@@ -83,6 +83,9 @@
     <Compile Include="ZoneCard.cs" />
     <Compile Include="ZoneMaker.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Cards\ZoneCard.json" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
     <When Condition="($(OS) == 'Unix' OR $(OS) == 'OSX') AND $(GAME_PATH) == ''">
@@ -112,6 +115,7 @@
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OUTPUT_PATH)" />
     <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFiles="$(OUTPUT_PATH)/com.maxsch.stacklands.cardzones.dll" />
+    <Copy SourceFiles="Cards/ZoneCard.json" DestinationFolder="$(OUTPUT_PATH)/Cards" />
     <Copy SourceFiles="../manifest.json" DestinationFolder="$(OUTPUT_PATH)" />
     <Copy SourceFiles="../workshop.txt" DestinationFolder="$(OUTPUT_PATH)" />
     <Copy SourceFiles="../icon.png" DestinationFolder="$(OUTPUT_PATH)" />
