@@ -11,6 +11,7 @@
     <AssemblyName>CardZones</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,6 +78,7 @@
   <ItemGroup>
     <Compile Include="CodeMatcherExtensions.cs" />
     <Compile Include="CardZonesMod.cs" />
+    <Compile Include="GlueEquipmentPatches.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Patches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
