@@ -62,10 +62,34 @@ namespace CardZones {
             return cardData.Id == "zoneCard";
         }
 
-        [HarmonyPatch(typeof(GameCard), nameof(GameCard.CanBePushedBy)), HarmonyPostfix]
-        public static void NoPushByZoneCards(Draggable draggable, ref bool __result) {
-            if (draggable is GameCard gameCard && gameCard.CardData.Id == "zoneCard") {
-                __result = false;
+        [HarmonyPatch(typeof(Draggable), nameof(Draggable.PushAwayFromOthers)), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Sticky(IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+            return new CodeMatcher(instructions)
+                .MatchForward(true, new CodeMatch(OpCodes.Isinst, typeof(HeavyFoundation)))
+                .SetInstruction(new CodeInstruction(CodeInstruction.Call(typeof(Patches), nameof(IsHeavy))))
+                .Print(2, 2)
+                .MatchForward(true, new CodeMatch(OpCodes.Isinst, typeof(HeavyFoundation)))
+                .SetInstruction(new CodeInstruction(CodeInstruction.Call(typeof(Patches), nameof(IsHeavy))))
+                .Print(2, 2)
+                .InstructionEnumeration();
+        }
+
+        private static bool IsHeavy(CardData cardData) {
+            if (cardData is HeavyFoundation) {
+                return true;
+            }
+
+            if (CardZonesMod.stickyZones.Value && cardData is ZoneCard) {
+                return true;
+            }
+
+            return false;
+        }
+
+        [HarmonyPatch(typeof(GameCard), nameof(GameCard.Mass), MethodType.Getter), HarmonyPostfix]
+        public static void Sticky(GameCard __instance, ref float __result) {
+            if (CardZonesMod.stickyZones.Value && __instance.CardData is ZoneCard) {
+                __result += 1000f;
             }
         }
 

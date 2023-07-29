@@ -1,8 +1,5 @@
 ﻿namespace CardZones {
     public class ZoneCard : CardData {
-        // public override bool CanBeDragged => false;
-        public override bool CanBePushedBy(CardData otherCard) => false;
-
         [ExtraData("zone_card_target_card_id")]
         public string targetCardId;
 
@@ -14,5 +11,7 @@
         public override bool CanHaveCard(CardData otherCard) {
             return otherCard.Id == targetCardId && otherCard.CanHaveCard(otherCard);
         }
+
+        public override bool CanBePushedBy(CardData otherCard) => false;
     }
 }
