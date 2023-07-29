@@ -97,31 +97,14 @@ namespace CardZones {
             return cardData;
         }
 
-        /// <summary>
-        ///     WorldManager.GetCardCount() has a generic method as an overload, so we have to get a bit creative to only patch the no-generic one
-        /// </summary>
-        [HarmonyPatch]
-        public class ZoneCardNotInCardCount {
-            public static IEnumerable<MethodBase> TargetMethods() {
-                Type[] types = Assembly.GetAssembly(typeof(WorldManager)).GetTypes();
-                List<MethodInfo> patches = types
-                                           .SelectMany(type => type.GetMethods())
-                                           .Where(method => method.ReturnType == typeof(int) &&
-                                                            method.Name == "GetCardCount" &&
-                                                            !method.IsGenericMethod &&
-                                                            method.GetParameters().Length == 0)
-                                           .ToList();
-
-                if (patches.Count > 1) {
-                    Log.LogWarning("More than one WorldManager.GetCardCount() method found, this can cause unexpected behavior");
-                }
-
-                return patches;
+        [HarmonyPatch(typeof(WorldManager), nameof(WorldManager.CountsTowardCardCount)), HarmonyPrefix]
+        public static bool DontCountZoneCard(GameCard card, ref bool __result) {
+            if (card.CardData.Id == "zoneCard") {
+                __result = false;
+                return false;
             }
 
-            public static void Postfix(WorldManager __instance, ref int __result) {
-                __result -= WorldManager.instance.GetCardCount("zoneCard");
-            }
+            return true;
         }
 
         /// <summary>
