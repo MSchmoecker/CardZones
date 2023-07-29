@@ -113,6 +113,7 @@
     <MakeDir Directories="$(OUTPUT_PATH)" />
     <Copy SourceFiles="$(TargetDir)$(AssemblyName).dll" DestinationFiles="$(OUTPUT_PATH)/com.maxsch.stacklands.cardzones.dll" />
     <Copy SourceFiles="../manifest.json" DestinationFolder="$(OUTPUT_PATH)" />
+    <Copy SourceFiles="../workshop.txt" DestinationFolder="$(OUTPUT_PATH)" />
     <Copy SourceFiles="../icon.png" DestinationFolder="$(OUTPUT_PATH)" />
   </Target>
 </Project>
