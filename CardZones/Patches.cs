@@ -33,9 +33,33 @@ namespace CardZones {
             if (__instance.CardData.Id == "zoneCard") {
                 __instance.HighlightRectangle.DashOffset = 0;
                 __instance.HighlightRectangle.enabled = true;
-                __instance.CoinIcon.gameObject.SetActive(false);
-                __instance.CoinText.transform.gameObject.SetActive(false);
             }
+        }
+
+        [HarmonyPatch(typeof(GameCard), nameof(GameCard.Update)), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> HideCoinIcon(IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
+            FieldInfo gameCard_CardData = AccessTools.Field(typeof(GameCard), nameof(GameCard.CardData));
+            FieldInfo cardData_Value = AccessTools.Field(typeof(CardData), nameof(CardData.Value));
+
+            return new CodeMatcher(instructions)
+                .MatchForward(true,
+                    new CodeMatch(i => i.LoadsField(gameCard_CardData)),
+                    new CodeMatch(i => i.LoadsField(cardData_Value)),
+                    new CodeMatch(OpCodes.Ldc_I4_M1)
+                )
+                .Advance(1)
+                .GetOperand(out object jumpLabel)
+                .Advance(1)
+                .InsertAndAdvance(
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(CodeInstruction.LoadField(typeof(GameCard), nameof(GameCard.CardData))),
+                    new CodeInstruction(CodeInstruction.Call(typeof(Patches), nameof(IsZoneCard))),
+                    new CodeInstruction(OpCodes.Brtrue, jumpLabel))
+                .InstructionEnumeration();
+        }
+
+        public static bool IsZoneCard(CardData cardData) {
+            return cardData.Id == "zoneCard";
         }
 
         [HarmonyPatch(typeof(GameCard), nameof(GameCard.CanBePushedBy)), HarmonyPostfix]
