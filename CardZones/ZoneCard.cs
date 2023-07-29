@@ -9,7 +9,13 @@
         }
 
         public override bool CanHaveCard(CardData otherCard) {
-            return otherCard.Id == targetCardId && otherCard.CanHaveCard(otherCard);
+            return otherCard.Id == targetCardId;
+        }
+
+        public override bool DetermineCanHaveCardsWhenIsRoot => !MyGameCard.HasChild ? base.DetermineCanHaveCardsWhenIsRoot : MyGameCard.Child.CardData.DetermineCanHaveCardsWhenIsRoot;
+
+        public override bool CanHaveCardsWhileHasStatus() {
+            return MyGameCard.HasChild ? MyGameCard.Child.CardData.CanHaveCardsWhileHasStatus() : base.CanHaveCardsWhileHasStatus();
         }
 
         public override bool CanBePushedBy(CardData otherCard) => false;
