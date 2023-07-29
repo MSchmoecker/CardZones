@@ -27,6 +27,15 @@ Furthermore, this mod uses Harmony to patch into the game, which means no game c
 - [Offical Stacklands Discord](https://discord.gg/sokpop), my Discord tag: Margmas#9562
 
 ## Changelog
+
+0.3.0
+- Added option to make zone cards sticky, if active they won't be pushed around by other cards. Disabled by default
+- Changed zones to allow more cards to be stacked, like producing structures
+- Slight performance improvements
+
+0.2.0
+- Update to support native Stacklands modding support instead of BepInEx
+
 0.1.4
 - Updated mod for game version 1.2.3 (dark forest update). This hides everything on the zone card again and also hides the new label on the zone maker
 
