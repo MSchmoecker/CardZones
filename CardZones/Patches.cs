@@ -65,10 +65,8 @@ namespace CardZones {
             return new CodeMatcher(instructions)
                 .MatchForward(true, new CodeMatch(OpCodes.Isinst, typeof(HeavyFoundation)))
                 .SetInstruction(new CodeInstruction(CodeInstruction.Call(typeof(Patches), nameof(IsHeavy))))
-                .Print(2, 2)
                 .MatchForward(true, new CodeMatch(OpCodes.Isinst, typeof(HeavyFoundation)))
                 .SetInstruction(new CodeInstruction(CodeInstruction.Call(typeof(Patches), nameof(IsHeavy))))
-                .Print(2, 2)
                 .InstructionEnumeration();
         }
 
