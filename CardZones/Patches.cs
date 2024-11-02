@@ -16,6 +16,7 @@ namespace CardZones {
             if (__instance.CardData.Id == "zoneCard") {
                 __instance.CardRenderer.enabled = false;
                 __instance.CardData.Value = 0;
+                __instance.CardData.CitiesValue = 0;
             }
         }
 
@@ -37,15 +38,17 @@ namespace CardZones {
         [HarmonyPatch(typeof(GameCard), nameof(GameCard.Update)), HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> HideCoinIcon(IEnumerable<CodeInstruction> instructions, ILGenerator generator) {
             FieldInfo gameCard_CardData = AccessTools.Field(typeof(GameCard), nameof(GameCard.CardData));
-            FieldInfo cardData_Value = AccessTools.Field(typeof(CardData), nameof(CardData.Value));
+            MethodInfo cardData_Value = AccessTools.Method(typeof(CardData), nameof(CardData.GetValue));
 
             return new CodeMatcher(instructions)
                 .MatchForward(true,
                     new CodeMatch(i => i.LoadsField(gameCard_CardData)),
-                    new CodeMatch(i => i.LoadsField(cardData_Value)),
-                    new CodeMatch(OpCodes.Ldc_I4_M1)
+                    new CodeMatch(i => i.Calls(cardData_Value)),
+                    new CodeMatch(OpCodes.Stloc_S),
+                    new CodeMatch(OpCodes.Ldloc_S),
+                    new CodeMatch(OpCodes.Ldc_I4_M1),
+                    new CodeMatch(i => i.opcode == OpCodes.Beq_S || i.opcode == OpCodes.Beq)
                 )
-                .Advance(1)
                 .GetOperand(out object jumpLabel)
                 .Advance(1)
                 .InsertAndAdvance(
