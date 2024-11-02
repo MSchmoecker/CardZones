@@ -28,6 +28,9 @@ Furthermore, this mod uses Harmony to patch into the game, which means no game c
 
 ## Changelog
 
+0.3.1
+- Update for Stacklands 2000 DLC
+
 0.3.0
 - Added option to make zone cards sticky, if active they won't be pushed around by other cards. Disabled by default
 - Changed zones to allow more cards to be stacked, like producing structures

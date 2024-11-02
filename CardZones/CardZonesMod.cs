@@ -5,7 +5,7 @@ namespace CardZones {
     public class CardZonesMod : Mod {
         public const string Name = "Card Zones";
         public const string GUID = "com.maxsch.stacklands.cardzones";
-        public const string Version = "0.3.0";
+        public const string Version = "0.3.1";
 
         public static ConfigEntry<bool> stickyZones;
 
